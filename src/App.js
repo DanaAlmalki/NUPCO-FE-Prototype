@@ -18,11 +18,11 @@ const App = () => {
   const [user, setUser] = useState("");
   const [loader, setLoader] = useState(true);
   let myLoginUser = JSON.parse(localStorage.getItem("user"));
-  // console.log("USER: ",user)
+  //console.log("USER: ", user.access_token);
 
   useEffect(() => {
     if (myLoginUser) {
-      setUser(myLoginUser._id);
+      setUser(myLoginUser.access_token);
       setLoader(false);
       // console.log("inside effect", myLoginUser)
     } else {

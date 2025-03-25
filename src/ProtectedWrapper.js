@@ -8,9 +8,9 @@ function ProtectedWrapper(props) {
   // console.log(auth);
   // console.log("====================================");
 
-  if (!auth.user) {
+  /* if (!auth.user) {
     return <Navigate to="/login" replace />;
-  }
+  }*/
 
   return props.children;
 }

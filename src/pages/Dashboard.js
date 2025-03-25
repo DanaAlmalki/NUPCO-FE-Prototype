@@ -35,8 +35,13 @@ export const data = {
 function Dashboard() {
   const [saleAmount, setSaleAmount] = useState("");
   const [purchaseAmount, setPurchaseAmount] = useState("");
-  const [stores, setStores] = useState([]);
   const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProduct] = useState(0);
+  const [topProducts, setTopProducts] = useState([]);
+
+  useEffect(() => {
+    setTotalProduct(products.length);
+  }, [products]);
 
   const [chart, setChart] = useState({
     options: {
@@ -81,54 +86,97 @@ function Dashboard() {
     });
   };
 
+  const [donut, setDonut] = useState({
+    labels: ["Apple", "Knorr", "Shoop", "Green", "Purple"],
+    datasets: [
+      {
+        label: "# of items sold",
+        data: [0, 1, 5, 8, 9],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
+
+  // Update Chart Data
+  const updateDonutData = (topProducts) => {
+    const updatedLabels = topProducts.map((p) => p.productName);
+    const updatedData = topProducts.map((p) => p.totalSold);
+    setDonut((prevDonut) => ({
+      ...prevDonut,
+      labels: updatedLabels,
+      datasets: [
+        {
+          ...prevDonut.datasets[0],
+          data: updatedData,
+        },
+      ],
+    }));
+  };
+
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
     fetchTotalSaleAmount();
     fetchTotalPurchaseAmount();
-    fetchStoresData();
     fetchProductsData();
     fetchMonthlySalesData();
+    fetchTopProductsData();
   }, []);
 
   // Fetching total sales amount
   const fetchTotalSaleAmount = () => {
-    fetch(
-      `http://localhost:4000/api/sales/get/${authContext.user}/totalsaleamount`
-    )
+    fetch(`http://localhost:3000/api/v1/kpis/total-selling`)
       .then((response) => response.json())
-      .then((datas) => setSaleAmount(datas.totalSaleAmount));
+      .then((data) => setSaleAmount(data.totalSelling));
   };
 
   // Fetching total purchase amount
   const fetchTotalPurchaseAmount = () => {
-    fetch(
-      `http://localhost:4000/api/purchase/get/${authContext.user}/totalpurchaseamount`
-    )
+    fetch(`http://localhost:3000/api/v1/kpis/total-purchase`)
       .then((response) => response.json())
-      .then((datas) => setPurchaseAmount(datas.totalPurchaseAmount));
-  };
-
-  // Fetching all stores data
-  const fetchStoresData = () => {
-    fetch(`http://localhost:4000/api/store/get/${authContext.user}`)
-      .then((response) => response.json())
-      .then((datas) => setStores(datas));
+      .then((data) => setPurchaseAmount(data.totalPurchase));
   };
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/v1/products`, {
+      headers: {
+        Authorization: `Bearer ${authContext.user}`,
+      },
+    })
       .then((response) => response.json())
-      .then((datas) => setProducts(datas))
-      .catch((err) => console.log(err));
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((er) => console.log(er));
   };
 
   // Fetching Monthly Sales
   const fetchMonthlySalesData = () => {
-    fetch(`http://localhost:4000/api/sales/getmonthly`)
+    fetch(`http://localhost:3000/api/v1/kpis/monthly-sales`)
       .then((response) => response.json())
-      .then((datas) => updateChartData(datas.salesAmount))
+      .then((data) => updateChartData(data))
+      .catch((err) => console.log(err));
+  };
+
+  const fetchTopProductsData = () => {
+    fetch(`http://localhost:3000/api/v1/kpis/top-selling-products`)
+      .then((response) => response.json())
+      .then((data) => updateDonutData(data.topSellingProducts))
       .catch((err) => console.log(err));
   };
 
@@ -233,7 +281,7 @@ function Dashboard() {
             <p>
               <span className="text-2xl font-medium text-gray-900">
                 {" "}
-                {products.length}{" "}
+                {totalProducts}{" "}
               </span>
 
               {/* <span className="text-xs text-gray-500"> from $404.32 </span> */}
@@ -266,10 +314,7 @@ function Dashboard() {
             </strong>
 
             <p>
-              <span className="text-2xl font-medium text-gray-900">
-                {" "}
-                {stores.length}{" "}
-              </span>
+              <span className="text-2xl font-medium text-gray-900"> {1} </span>
 
               {/* <span className="text-xs text-gray-500"> from 0 </span> */}
             </p>
@@ -285,7 +330,7 @@ function Dashboard() {
             />
           </div>
           <div>
-            <Doughnut data={data} />
+            <Doughnut data={donut} />
           </div>
         </div>
       </div>

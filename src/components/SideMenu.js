@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FaRegUserCircle } from "react-icons/fa";
 
 function SideMenu() {
   const localStorageData = JSON.parse(localStorage.getItem("user"));
@@ -69,12 +70,7 @@ function SideMenu() {
 
       <div className="sticky inset-x-0 bottom-0 border-t border-gray-100">
         <div className="flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
-          <img
-            alt="Profile"
-            src={localStorageData.imageUrl}
-            className="h-10 w-10 rounded-full object-cover"
-          />
-
+          <FaRegUserCircle className="h-10 w-10 rounded-full object-cover" />
           <div>
             <p className="text-xs">
               <strong className="block font-medium">

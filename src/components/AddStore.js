@@ -24,7 +24,7 @@ export default function AddStore() {
 
   const addProduct = () => {
     console.log(form);
-    fetch("http://localhost:4000/api/store/add", {
+    fetch("http://localhost:3000/api/store/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

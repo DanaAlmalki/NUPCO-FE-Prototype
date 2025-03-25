@@ -12,27 +12,8 @@ function Login() {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
-
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const authCheck = () => {
-    setTimeout(() => {
-      fetch("http://localhost:4000/api/login")
-        .then((response) => response.json())
-        .then((data) => {
-          alert("Successfully Login");
-          localStorage.setItem("user", JSON.stringify(data));
-          authContext.signin(data._id, () => {
-            navigate("/");
-          });
-        })
-        .catch((err) => {
-          alert("Wrong credentials, Try again")
-          console.log(err);
-        });
-    }, 3000);
   };
 
   const loginUser = (e) => {
@@ -40,29 +21,32 @@ function Login() {
     if (form.email === "" || form.password === "") {
       alert("To login user, enter details to proceed...");
     } else {
-      fetch("http://localhost:4000/api/login", {
+      fetch("http://localhost:3000/api/v1/auth/signin", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
         body: JSON.stringify(form),
       })
-        .then((result) => {
-          console.log("User login", result);
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("User login", data);
+          //alert("Successfully Login");
+          localStorage.setItem("user", JSON.stringify(data));
+          authContext.signin(data.access_token, () => {
+            navigate("/");
+          });
         })
         .catch((error) => {
           console.log("Something went wrong ", error);
         });
     }
-    authCheck();
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
-  
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 h-screen  items-center place-items-center">
@@ -81,9 +65,7 @@ function Login() {
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               Or
-              <span
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
+              <span className="font-medium text-indigo-600 hover:text-indigo-500">
                 start your 14-day free trial
               </span>
             </p>
@@ -142,9 +124,7 @@ function Login() {
               </div>
 
               <div className="text-sm">
-                <span
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
+                <span className="font-medium text-indigo-600 hover:text-indigo-500">
                   Forgot your password?
                 </span>
               </div>
@@ -166,9 +146,7 @@ function Login() {
               </button>
               <p className="mt-2 text-center text-sm text-gray-600">
                 Or{" "}
-                <span
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
+                <span className="font-medium text-indigo-600 hover:text-indigo-500">
                   Don't Have an Account, Please{" "}
                   <Link to="/register"> Register now </Link>
                 </span>

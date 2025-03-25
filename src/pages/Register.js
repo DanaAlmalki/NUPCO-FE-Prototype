@@ -1,15 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import UploadImage from "../components/UploadImage";
 
 function Register() {
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
+    Name: "",
     email: "",
     password: "",
-    phoneNumber: "",
-    imageUrl: "",
   });
 
   const navigate = useNavigate();
@@ -21,7 +17,7 @@ function Register() {
 
   // Register User
   const registerUser = () => {
-    fetch("http://localhost:4000/api/register", {
+    fetch("http://localhost:3000/api/v1/auth/signup", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -30,35 +26,15 @@ function Register() {
     })
       .then((result) => {
         alert("Successfully Registered, Now Login with your details");
-        navigate('/login')
-        
+        navigate("/login");
       })
       .catch((err) => console.log(err));
   };
   // ------------------
 
-  // Uploading image to cloudinary
-  const uploadImage = async (image) => {
-    const data = new FormData();
-    data.append("file", image);
-    data.append("upload_preset", "inventoryapp");
-
-    await fetch("https://api.cloudinary.com/v1_1/ddhayhptm/image/upload", {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setForm({ ...form, imageUrl: data.url });
-        alert("Image Successfully Uploaded");
-      })
-      .catch((error) => console.log(error));
-  };
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
-  }
+  };
 
   return (
     <>
@@ -85,15 +61,6 @@ function Register() {
                   className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="First Name"
                   value={form.firstName}
-                  onChange={handleInputChange}
-                />
-                <input
-                  name="lastName"
-                  type="text"
-                  required
-                  className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder="Last Name"
-                  value={form.lastName}
                   onChange={handleInputChange}
                 />
               </div>
@@ -123,19 +90,6 @@ function Register() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div>
-                <input
-                  name="phoneNumber"
-                  type="number"
-                  autoComplete="phoneNumber"
-                  required
-                  className="relative block w-full rounded-b-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder="Phone Number"
-                  value={form.phoneNumber}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <UploadImage uploadImage={uploadImage} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -157,9 +111,7 @@ function Register() {
               </div>
 
               <div className="text-sm">
-                <span
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
+                <span className="font-medium text-indigo-600 hover:text-indigo-500">
                   Forgot your password?
                 </span>
               </div>
@@ -181,9 +133,7 @@ function Register() {
               </button>
               <p className="mt-2 text-center text-sm text-gray-600">
                 Or{" "}
-                <span
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
+                <span className="font-medium text-indigo-600 hover:text-indigo-500">
                   Already Have an Account, Please
                   <Link to="/login"> Signin now </Link>
                 </span>

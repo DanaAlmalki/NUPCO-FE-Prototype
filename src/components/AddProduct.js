@@ -1,20 +1,25 @@
-import { Fragment, useContext, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import AuthContext from "../AuthContext";
 
 export default function AddProduct({
   addProductModalSetting,
   handlePageUpdate,
+  categories,
+  brands,
+  suppliers,
 }) {
-  const authContext = useContext(AuthContext);
   const [product, setProduct] = useState({
-    userId: authContext.user,
-    name: "",
-    manufacturer: "",
-    description: "",
+    medicineName: "",
+    category: categories[0]._id,
+    brands: brands[0]._id,
+    supplier: suppliers[0]._id,
+    buyPrice: 0,
+    sellPrice: 0,
+    quantity: 0,
+    expireDate: "",
   });
-  console.log("----",product)
+
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
 
@@ -23,7 +28,7 @@ export default function AddProduct({
   };
 
   const addProduct = () => {
-    fetch("http://localhost:4000/api/product/add", {
+    fetch("http://localhost:3000/api/v1/products/purchase", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -97,9 +102,9 @@ export default function AddProduct({
                             </label>
                             <input
                               type="text"
-                              name="name"
+                              name="medicineName"
                               id="name"
-                              value={product.name}
+                              value={product.medicineName}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
@@ -109,37 +114,45 @@ export default function AddProduct({
                           </div>
                           <div>
                             <label
-                              htmlFor="manufacturer"
+                              htmlFor="supplier"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Manufacturer
+                              Supplier
                             </label>
-                            <input
-                              type="text"
-                              name="manufacturer"
-                              id="manufacturer"
-                              value={product.manufacturer}
+                            <select
+                              id="supplier"
+                              name="supplier"
+                              value={product.supplier}
+                              placeholder="choose supplier"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="Ex. Apple"
-                            />
+                            >
+                              {suppliers.map((option) => (
+                                <option key={option._id} value={option.name}>
+                                  {option.name}
+                                </option>
+                              ))}
+                            </select>
                           </div>
-                          {/* <div>
+                          <div>
                             <label
-                              for="price"
+                              htmlFor="buy-price"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Price
+                              Buy Price
                             </label>
                             <input
                               type="number"
-                              name="price"
-                              id="price"
-                              value={product.price}
+                              name="buyPrice"
+                              id="buy-price"
+                              value={product.buyPrice}
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleInputChange(
+                                  e.target.name,
+                                  parseFloat(e.target.value)
+                                )
                               }
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="$299"
@@ -147,7 +160,76 @@ export default function AddProduct({
                           </div>
                           <div>
                             <label
-                              for="quantity"
+                              htmlFor="sell-price"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Sell Price
+                            </label>
+                            <input
+                              type="number"
+                              name="sellPrice"
+                              id="sell-price"
+                              value={product.sellPrice}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  e.target.name,
+                                  parseFloat(e.target.value)
+                                )
+                              }
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="$299"
+                            />
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="category"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Category
+                            </label>
+                            <select
+                              id="category"
+                              name="category"
+                              value={product.category}
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                            >
+                              {categories.map((option) => (
+                                <option key={option._id} value={option._id}>
+                                  {option.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="brand"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Brand
+                            </label>
+                            <select
+                              id="brand"
+                              name="brands"
+                              value={product.brands}
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                            >
+                              {brands.map((option) => (
+                                <option key={option._id} value={option.name}>
+                                  {option.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor="quantity"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
                               Quantity
@@ -158,37 +240,33 @@ export default function AddProduct({
                               id="quantity"
                               value={product.quantity}
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleInputChange(
+                                  e.target.name,
+                                  parseFloat(e.target.value)
+                                )
                               }
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="0 - 999"
                             />
-                          </div> */}
+                          </div>
 
-                          <div className="sm:col-span-2">
+                          <div>
                             <label
-                              htmlFor="description"
+                              htmlFor="date"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Description
+                              Expiration Date
                             </label>
-                            <textarea
-                              id="description"
-                              rows="5"
-                              name="description"
-                              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="Write a description..."
-                              value={product.description}
+                            <input
+                              type="date"
+                              name="expireDate"
+                              id="date"
+                              value={product.expireDate.slice(0, 10)}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
-                            >
-                              Standard glass, 3.8GHz 8-core 10th-generation
-                              Intel Core i7 processor, Turbo Boost up to 5.0GHz,
-                              16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with
-                              8GB of GDDR6 memory, 256GB SSD storage, Gigabit
-                              Ethernet, Magic Mouse 2, Magic Keyboard - US
-                            </textarea>
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            />
                           </div>
                         </div>
                         <div className="flex items-center space-x-4">

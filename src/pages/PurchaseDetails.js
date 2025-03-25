@@ -17,7 +17,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Purchase items
   const fetchPurchaseData = () => {
-    fetch(`http://localhost:4000/api/purchase/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/purchase/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllPurchaseData(data);
@@ -27,7 +27,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/product/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllProducts(data);
@@ -40,7 +40,6 @@ function PurchaseDetails() {
     setPurchaseModal(!showPurchaseModal);
   };
 
-  
   // Handle Page Update
   const handlePageUpdate = () => {
     setUpdatePage(!updatePage);
@@ -54,7 +53,7 @@ function PurchaseDetails() {
             addSaleModalSetting={addSaleModalSetting}
             products={products}
             handlePageUpdate={handlePageUpdate}
-            authContext = {authContext}
+            authContext={authContext}
           />
         )}
         {/* Table  */}
