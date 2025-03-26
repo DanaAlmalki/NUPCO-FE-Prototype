@@ -13,19 +13,17 @@ function Inventory() {
   const [updatePage, setUpdatePage] = useState(true);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [suppliers, setSuppliers] = useState({});
-
-  const authContext = useContext(AuthContext);
-  /*console.log("====================================");
-  console.log(authContext);
-  console.log("====================================");*/
+  const [suppliers, setSuppliers] = useState([]);
+  const [saleAmount, setSaleAmount] = useState("");
+  const [topProducts, setTopProducts] = useState([]);
 
   useEffect(() => {
     fetchProductsData();
     fetchCategoriesData();
     fetchBrandsData();
     fetchSuppliersData();
-    //fetchSalesData();
+    fetchTotalSaleAmount();
+    fetchTopProductsData();
   }, [updatePage]);
 
   // Fetching Data of All Products
@@ -73,6 +71,20 @@ function Inventory() {
         setSuppliers(data.data);
       })
       .catch((er) => console.log(er));
+  };
+
+  // Fetching total sales amount
+  const fetchTotalSaleAmount = () => {
+    fetch(`http://localhost:3000/api/v1/kpis/total-selling`)
+      .then((response) => response.json())
+      .then((data) => setSaleAmount(data.totalSelling));
+  };
+
+  const fetchTopProductsData = () => {
+    fetch(`http://localhost:3000/api/v1/kpis/top-selling-products`)
+      .then((response) => response.json())
+      .then((data) => setTopProducts(data.topSellingProducts))
+      .catch((err) => console.log(err));
   };
 
   // Modal for Product ADD
@@ -141,7 +153,7 @@ function Inventory() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-600 text-base">
-                    $2000
+                    ${saleAmount}
                   </span>
                   <span className="font-thin text-gray-400 text-xs">
                     Revenue
@@ -156,7 +168,7 @@ function Inventory() {
               <div className="flex gap-8">
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-600 text-base">
-                    5
+                    {topProducts.length}
                   </span>
                   <span className="font-thin text-gray-400 text-xs">
                     Last 7 days
@@ -164,7 +176,7 @@ function Inventory() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-600 text-base">
-                    $1500
+                    ${topProducts.reduce((acc, item) => acc + item.revenue, 0)}
                   </span>
                   <span className="font-thin text-gray-400 text-xs">Cost</span>
                 </div>
