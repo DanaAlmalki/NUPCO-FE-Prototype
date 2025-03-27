@@ -25,7 +25,7 @@ export default function BrandsTable({ brands }) {
           </div>
           <div className="flex gap-4">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+              className="bg-custom-orange hover:bg-cloud-burst text-white font-bold p-2 text-xs  rounded"
               //onClick={addProductModalSetting}
             >
               {/* <Link to="/inventory/add-product">Add Product</Link> */}

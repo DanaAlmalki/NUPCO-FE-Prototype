@@ -1,7 +1,7 @@
 import { Fragment, useContext } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { FaRegUserCircle } from "react-icons/fa";
+import { PiUserCircleLight } from "react-icons/pi";
 import AuthContext from "../AuthContext";
 import { Link } from "react-router-dom";
 
@@ -25,41 +25,41 @@ export default function Header() {
   return (
     <>
       <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-white">
           {({ open }) => (
             <>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
+              <div className="max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="flex h-max items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="flex items-center gap-[2rem]">
                         <img
-                          className="h-8 w-8"
-                          src={require("../assets/logo.png")}
+                          className="object-scale-down w-[8rem] pb-3"
+                          src={require("../assets/NUPCO-logo.png")}
                           alt="Inventory Management System"
                         />
-                        <span className="font-bold text-white italic">
+                        <span className="text-xl font-bold text-cloud-burst pt-4 font-[tahoma]">
                           Inventory Management
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="hidden md:block">
-                    <div className="ml-4 flex items-center md:ml-6">
+                    <div className="ml-4 flex items-center md:ml-6 pt-4">
                       <button
                         type="button"
-                        className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        className="rounded-full p-1 hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                       >
                         <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        <BellIcon className="h-8 w-8" aria-hidden="true" />
                       </button>
 
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
-                            <FaRegUserCircle className="h-8 w-8 rounded-full" />
+                            <PiUserCircleLight className="h-8 w-8 rounded-full" />
                           </Menu.Button>
                         </div>
                         <Transition
@@ -74,11 +74,11 @@ export default function Header() {
                           <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
-                                {({ active }) => (
+                                {({ current }) => (
                                   <Link
                                     to={item.href}
                                     className={classNames(
-                                      active ? "bg-gray-100" : "",
+                                      current ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
                                     )}
                                   >
@@ -96,7 +96,7 @@ export default function Header() {
                   </div>
                   <div className="-mr-2 flex md:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-orange-button p-2 text-white hover:bg-cloud-burst hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-white">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon
@@ -124,8 +124,8 @@ export default function Header() {
                         // href={item.href}
                         className={classNames(
                           item.current
-                            ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                            ? "bg-cloud-burst text-white"
+                            : "text-black hover:bg-gray-700 hover:text-white",
                           "block rounded-md px-3 py-2 text-base font-medium"
                         )}
                         aria-current={item.current ? "page" : undefined}
@@ -138,7 +138,7 @@ export default function Header() {
                 <div className="border-t border-gray-700 pt-4 pb-3">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <FaRegUserCircle className="h-10 w-10 rounded-full" />
+                      <PiUserCircleLight className="h-10 w-10 rounded-full" />
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">
@@ -152,10 +152,10 @@ export default function Header() {
                     </div>
                     <button
                       type="button"
-                      className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="ml-auto flex-shrink-0 rounded-full p-1 hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                      <BellIcon className="h-10 w-10" aria-hidden="true" />
                     </button>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
@@ -164,7 +164,7 @@ export default function Header() {
                         key={item.name}
                         as="a"
                         href={item.href}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                        className="block rounded-md px-3 py-2 text-custom-blue font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                       >
                         <span onClick={() => authContext.signout()}>
                           {item.name}{" "}

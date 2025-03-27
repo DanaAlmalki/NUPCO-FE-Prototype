@@ -6,14 +6,12 @@ export default function AddPurchaseDetails({
   addSaleModalSetting,
   products,
   handlePageUpdate,
-  authContext,
 }) {
   const [purchase, setPurchase] = useState({
-    userID: authContext.user,
-    productID: "",
-    quantityPurchased: "",
-    purchaseDate: "",
-    totalPurchaseAmount: "",
+    product: "",
+    quantity: 0,
+    buyPrice: 0,
+    expireDate: "",
   });
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -27,7 +25,7 @@ export default function AddPurchaseDetails({
 
   // POST Data
   const addSale = () => {
-    fetch("http://localhost:3000/api/purchase/add", {
+    fetch("http://localhost:3000/api/v1/purchase", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -94,24 +92,24 @@ export default function AddPurchaseDetails({
                         <div className="grid gap-4 mb-4 sm:grid-cols-2">
                           <div>
                             <label
-                              htmlFor="productID"
+                              htmlFor="product"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
                               Product Name
                             </label>
                             <select
-                              id="productID"
+                              id="product"
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              name="productID"
+                              name="product"
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
                             >
-                              <option selected="">Select Products</option>
+                              <option value="">Select Products</option>
                               {products.map((element, index) => {
                                 return (
                                   <option key={element._id} value={element._id}>
-                                    {element.name}
+                                    {element.medicineName}
                                   </option>
                                 );
                               })}
@@ -119,18 +117,21 @@ export default function AddPurchaseDetails({
                           </div>
                           <div>
                             <label
-                              htmlFor="quantityPurchased"
+                              htmlFor="quantity"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Quantity Purchased
+                              Quantity
                             </label>
                             <input
                               type="number"
-                              name="quantityPurchased"
-                              id="quantityPurchased"
-                              value={purchase.quantityPurchased}
+                              name="quantity"
+                              id="quantity"
+                              value={purchase.quantity}
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleInputChange(
+                                  e.target.name,
+                                  parseInt(e.target.value)
+                                )
                               }
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="0 - 999"
@@ -141,15 +142,18 @@ export default function AddPurchaseDetails({
                               htmlFor="totalPurchaseAmount"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Total Purchase Amount
+                              Price
                             </label>
                             <input
                               type="number"
-                              name="totalPurchaseAmount"
-                              id="price"
-                              value={purchase.totalPurchaseAmount}
+                              name="buyPrice"
+                              id="buyPrice"
+                              value={purchase.buyPrice}
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleInputChange(
+                                  e.target.name,
+                                  parseFloat(e.target.value)
+                                )
                               }
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="$299"
@@ -163,16 +167,16 @@ export default function AddPurchaseDetails({
                             /> */}
                             <label
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              htmlFor="purchaseDate"
+                              htmlFor="expireDate"
                             >
-                              Purchase Date
+                              Expire Date
                             </label>
                             <input
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               type="date"
-                              id="purchaseDate"
-                              name="purchaseDate"
-                              value={purchase.purchaseDate}
+                              id="expireDate"
+                              name="expireDate"
+                              value={purchase.expireDate}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
@@ -212,7 +216,7 @@ export default function AddPurchaseDetails({
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-orange-button px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cloud-burst sm:ml-3 sm:w-auto"
                     onClick={addSale}
                   >
                     Add

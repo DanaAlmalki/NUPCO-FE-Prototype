@@ -75,7 +75,6 @@ const App = () => {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/purchase-details" element={<PurchaseDetails />} />
             <Route path="/sales" element={<Sales />} />
-            <Route path="/manage-store" element={<Store />} />
           </Route>
           <Route path="*" element={<NoPageFound />} />
         </Routes>

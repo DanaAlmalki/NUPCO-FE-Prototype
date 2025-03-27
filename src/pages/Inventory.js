@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import AddProduct from "../components/AddProduct";
 import UpdateProduct from "../components/UpdateProduct";
-import AuthContext from "../AuthContext";
 import BrandsTable from "../components/BrandsTable";
 
 function Inventory() {
@@ -16,6 +15,8 @@ function Inventory() {
   const [suppliers, setSuppliers] = useState([]);
   const [saleAmount, setSaleAmount] = useState("");
   const [topProducts, setTopProducts] = useState([]);
+  const [outStock, setOutStock] = useState(0);
+  const [lowStock, setLowStock] = useState(0);
 
   useEffect(() => {
     fetchProductsData();
@@ -24,6 +25,8 @@ function Inventory() {
     fetchSuppliersData();
     fetchTotalSaleAmount();
     fetchTopProductsData();
+    fetchLowStock();
+    fetchOutStock();
   }, [updatePage]);
 
   // Fetching Data of All Products
@@ -84,6 +87,20 @@ function Inventory() {
     fetch(`http://localhost:3000/api/v1/kpis/top-selling-products`)
       .then((response) => response.json())
       .then((data) => setTopProducts(data.topSellingProducts))
+      .catch((err) => console.log(err));
+  };
+
+  const fetchLowStock = () => {
+    fetch(`http://localhost:3000/api/v1/kpis/low-stock-items`)
+      .then((response) => response.json())
+      .then((data) => setLowStock(data.lowStockItems.length))
+      .catch((err) => console.log(err));
+  };
+
+  const fetchOutStock = () => {
+    fetch(`http://localhost:3000/api/v1/products/get/stock-out`)
+      .then((response) => response.json())
+      .then((data) => setOutStock(data.length))
       .catch((err) => console.log(err));
   };
 
@@ -189,18 +206,16 @@ function Inventory() {
               <div className="flex gap-8">
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-600 text-base">
-                    12
+                    {lowStock}
                   </span>
-                  <span className="font-thin text-gray-400 text-xs">
-                    Ordered
-                  </span>
+                  <span className="font-thin text-gray-400 text-xs">low</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-600 text-base">
-                    2
+                    {outStock}
                   </span>
                   <span className="font-thin text-gray-400 text-xs">
-                    Not in Stock
+                    Out of Stock
                   </span>
                 </div>
               </div>
@@ -246,7 +261,7 @@ function Inventory() {
             </div>
             <div className="flex gap-4">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+                className="bg-custom-orange hover:bg-cloud-burst text-white font-bold p-2 text-xs  rounded"
                 onClick={addProductModalSetting}
               >
                 {/* <Link to="/inventory/add-product">Add Product</Link> */}
@@ -295,7 +310,11 @@ function Inventory() {
                       {element.quantity}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.quantity > 0 ? "In Stock" : "Not in Stock"}
+                      {element.quantity > 0 ? (
+                        <div className="text-lime-600">In Stock</div>
+                      ) : (
+                        <div className="text-red-600">Out of Stock</div>
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       <span
@@ -341,7 +360,7 @@ function Inventory() {
               </div>
               <div className="flex gap-4">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+                  className="bg-custom-orange hover:bg-cloud-burst  text-white font-bold p-2 text-xs  rounded"
                   onClick={addProductModalSetting}
                 >
                   {/* <Link to="/inventory/add-product">Add Product</Link> */}

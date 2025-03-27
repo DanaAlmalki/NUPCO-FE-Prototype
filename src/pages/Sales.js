@@ -5,8 +5,7 @@ import AuthContext from "../AuthContext";
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
   const [sales, setAllSalesData] = useState([]);
-  const [products, setAllProducts] = useState([]);
-  const [stores, setAllStores] = useState([]);
+  const [products, setProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
 
   const authContext = useContext(AuthContext);
@@ -14,36 +13,34 @@ function Sales() {
   useEffect(() => {
     fetchSalesData();
     fetchProductsData();
-    fetchStoresData();
   }, [updatePage]);
 
   // Fetching Data of All Sales
   const fetchSalesData = () => {
-    fetch(`http://localhost:3000/api/sales/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/v1/order`, {
+      headers: {
+        Authorization: `Bearer ${authContext.user}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
-        setAllSalesData(data);
+        setAllSalesData(data.data);
       })
       .catch((err) => console.log(err));
   };
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:3000/api/product/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/v1/products`, {
+      headers: {
+        Authorization: `Bearer ${authContext.user}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
-        setAllProducts(data);
+        setProducts(data);
       })
-      .catch((err) => console.log(err));
-  };
-
-  // Fetching Data of All Stores
-  const fetchStoresData = () => {
-    fetch(`http://localhost:3000/api/store/get/${authContext.user}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setAllStores(data);
-      });
+      .catch((er) => console.log(er));
   };
 
   // Modal for Sale Add
@@ -63,7 +60,6 @@ function Sales() {
           <AddSale
             addSaleModalSetting={addSaleModalSetting}
             products={products}
-            stores={stores}
             handlePageUpdate={handlePageUpdate}
             authContext={authContext}
           />
@@ -76,7 +72,7 @@ function Sales() {
             </div>
             <div className="flex gap-4">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+                className="bg-custom-orange hover:bg-cloud-burst text-white font-bold p-2 text-xs  rounded"
                 onClick={addSaleModalSetting}
               >
                 {/* <Link to="/inventory/add-product">Add Product</Link> */}
@@ -89,9 +85,6 @@ function Sales() {
               <tr>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Product Name
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Store Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Stock Sold
@@ -110,19 +103,16 @@ function Sales() {
                 return (
                   <tr key={element._id}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.ProductID?.name}
+                      {element.cartItems[0].name}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.StoreID?.name}
+                      {element.totalItems}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.StockSold}
+                      {element.createdAt.slice(0, 10)}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.SaleDate}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.TotalSaleAmount}
+                      ${element.totalAmount}
                     </td>
                   </tr>
                 );

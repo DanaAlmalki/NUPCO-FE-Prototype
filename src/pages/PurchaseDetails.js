@@ -5,7 +5,7 @@ import AuthContext from "../AuthContext";
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
   const [purchase, setAllPurchaseData] = useState([]);
-  const [products, setAllProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
 
   const authContext = useContext(AuthContext);
@@ -17,7 +17,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Purchase items
   const fetchPurchaseData = () => {
-    fetch(`http://localhost:3000/api/purchase/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/v1/purchase`)
       .then((response) => response.json())
       .then((data) => {
         setAllPurchaseData(data);
@@ -27,14 +27,13 @@ function PurchaseDetails() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:3000/api/product/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/v1/products`)
       .then((response) => response.json())
       .then((data) => {
-        setAllProducts(data);
+        setProducts(data);
       })
-      .catch((err) => console.log(err));
+      .catch((er) => console.log(er));
   };
-
   // Modal for Sale Add
   const addSaleModalSetting = () => {
     setPurchaseModal(!showPurchaseModal);
@@ -64,7 +63,7 @@ function PurchaseDetails() {
             </div>
             <div className="flex gap-4">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+                className="bg-custom-orange hover:bg-cloud-burst text-white font-bold p-2 text-xs  rounded"
                 onClick={addSaleModalSetting}
               >
                 {/* <Link to="/inventory/add-product">Add Product</Link> */}
@@ -95,19 +94,16 @@ function PurchaseDetails() {
                 return (
                   <tr key={element._id}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.ProductID?.name}
+                      {element.product?.medicineName}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.QuantityPurchased}
+                      {element.quantity}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {new Date(element.PurchaseDate).toLocaleDateString() ==
-                      new Date().toLocaleDateString()
-                        ? "Today"
-                        : element.PurchaseDate}
+                      {element.createdAt.slice(0, 10)}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.TotalPurchaseAmount}
+                      ${element.totalPurchaseAmount}
                     </td>
                   </tr>
                 );

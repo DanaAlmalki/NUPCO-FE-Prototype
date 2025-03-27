@@ -3,7 +3,11 @@ import AuthContext from "../AuthContext";
 import StocksChart from "../components/Charts/StocksChart";
 import TopSellingChart from "../components/Charts/TopSellingChart";
 import MonthlySales from "../components/Charts/MonthlySales";
-import TopSelling from "../components/Charts/TopSelling";
+import ProductExpiryChart from "../components/Charts/ProductExpiryChart";
+import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaArrowTrendDown } from "react-icons/fa6";
+import { FaBoxesPacking } from "react-icons/fa6";
+import { AiFillProduct } from "react-icons/ai";
 
 function Dashboard() {
   const [saleAmount, setSaleAmount] = useState("");
@@ -12,6 +16,7 @@ function Dashboard() {
   const [totalProducts, setTotalProduct] = useState(0);
   const [topProducts, setTopProducts] = useState([]);
   const [salesByMonth, setSalesByMonth] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
 
   useEffect(() => {
     setTotalProduct(products.length);
@@ -25,7 +30,17 @@ function Dashboard() {
     fetchProductsData();
     fetchMonthlySalesData();
     fetchTopProductsData();
+    fetchSuppliersData();
   }, []);
+
+  const fetchSuppliersData = () => {
+    fetch(`http://localhost:3000/api/v1/suppliers`)
+      .then((response) => response.json())
+      .then((data) => {
+        setSuppliers(data.data);
+      })
+      .catch((er) => console.log(er));
+  };
 
   // Fetching total sales amount
   const fetchTotalSaleAmount = () => {
@@ -74,6 +89,7 @@ function Dashboard() {
     <>
       <div className="grid grid-cols-1 col-span-12 lg:col-span-10 gap-6 md:grid-cols-3 lg:grid-cols-4  p-4 ">
         <article className="flex flex-col gap-4 rounded-lg border  border-gray-100 bg-white p-6  ">
+          <FaArrowTrendUp className="text-2xl text-green-600" />
           <strong className="block text-sm font-medium text-gray-500">
             Revenue
           </strong>
@@ -84,56 +100,67 @@ function Dashboard() {
           </p>
         </article>
         <article className="flex flex-col  gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
+          <FaArrowTrendDown className="text-2xl text-red-600" />
           <strong className="block text-sm font-medium text-gray-500">
             Spending
           </strong>
           <p>
             <span className="text-2xl font-medium text-gray-900">
-              {" "}
-              ${purchaseAmount}{" "}
+              ${purchaseAmount}
             </span>
             {/*<span className="text-xs text-gray-500"> from $404.32 </span>*/}
           </p>
         </article>
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
+          <FaBoxesPacking className="text-2xl text-custom-blue" />
+          <strong className="block text-sm font-medium text-gray-500">
+            No. of Suppliers
+          </strong>
+          <p>
+            <span className="text-2xl font-medium text-gray-900">
+              {suppliers.length}
+            </span>
+            {/* <span className="text-xs text-gray-500"> from 0 </span> */}
+          </p>
+        </article>
+        <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
+          <AiFillProduct className="text-2xl text-custom-orange" />
           <strong className="block text-sm font-medium text-gray-500">
             No. of Products
           </strong>
           <p>
             <span className="text-2xl font-medium text-gray-900">
-              {" "}
-              {totalProducts}{" "}
+              {totalProducts}
             </span>
-          </p>
-        </article>
-        <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <strong className="block text-sm font-medium text-gray-500">
-            No. of Suppliers
-          </strong>
-          <p>
-            <span className="text-2xl font-medium text-gray-900"> {1} </span>
-            {/* <span className="text-xs text-gray-500"> from 0 </span> */}
           </p>
         </article>
         <div className="flex flex-wrap gap-y-[1rem] gap-x-[1rem] justify-around rounded-lg col-span-full justify-center">
           <div className="bg-white py-8 px-8  col rounded-lg">
-            <div className="text-xl font-semibold px-4 mb-[1rem]">
-              Products Stock
-            </div>
-            <StocksChart products={products} />
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-y-[1rem] gap-x-[1rem] justify-around bg-white rounded-lg py-8 col-span-full justify-center">
-          <div>
-            <div className="text-xl font-semibold px-4 mb-[1rem]">
+            <div className="text-2xl font-semibold px-4 mb-[1rem]">
               Monthly Sales
             </div>
-            <div style={{ width: "600px", height: "300px" }}>
+            <div style={{ width: "1000px", height: "400px" }}>
               <MonthlySales salesData={salesByMonth} />
             </div>
           </div>
+        </div>
+        <div className="flex flex-wrap gap-y-[1rem] gap-x-[1rem] justify-around bg-white rounded-lg py-8 col-span-full justify-center">
+          <div className="flex flex-col justify-between">
+            <div>
+              <div className="text-2xl font-semibold px-4 mb-[1rem]">
+                Products Stock
+              </div>
+              <StocksChart products={products} />
+            </div>
+            <div>
+              <div className="text-2xl font-semibold px-4 mb-[1rem]">
+                Products Expiry
+              </div>
+              <ProductExpiryChart />
+            </div>
+          </div>
           <div>
-            <div className="text-xl font-semibold px-4 mb-[1rem]">
+            <div className="text-2xl font-semibold px-4 mb-[1rem]">
               Top Selling Products
             </div>
             <TopSellingChart topProducts={topProducts} />

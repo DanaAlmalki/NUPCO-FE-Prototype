@@ -5,32 +5,34 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 export default function AddSale({
   addSaleModalSetting,
   products,
-  stores,
   handlePageUpdate,
   authContext,
 }) {
   const [sale, setSale] = useState({
-    userID: authContext.user,
-    productID: "",
-    storeID: "",
-    stockSold: "",
-    saleDate: "",
-    totalSaleAmount: "",
+    cartItems: [
+      {
+        productId: "67e3f0f39c61d1f9e8dda092",
+        quantity: 3,
+      },
+    ],
+    status: "Paid",
   });
+
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
 
   // Handling Input Change for input fields
   const handleInputChange = (key, value) => {
-    setSale({ ...sale, [key]: value });
+    setSale({ ...sale, cartItems: [{ ...sale.cartItems[0], [key]: value }] });
   };
 
   // POST Data
   const addSale = () => {
-    fetch("http://localhost:3000/api/sales/add", {
+    fetch("http://localhost:3000/api/v1/order", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
+        Authorization: `Bearer ${authContext.user}`,
       },
       body: JSON.stringify(sale),
     })
@@ -94,24 +96,24 @@ export default function AddSale({
                         <div className="grid gap-4 mb-4 sm:grid-cols-2">
                           <div>
                             <label
-                              htmlFor="productID"
+                              htmlFor="productId"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
                               Product Name
                             </label>
                             <select
-                              id="productID"
+                              id="productId"
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              name="productID"
+                              name="productId"
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
                             >
-                              <option selected="">Select Products</option>
+                              <option value="">Select Products</option>
                               {products.map((element, index) => {
                                 return (
                                   <option key={element._id} value={element._id}>
-                                    {element.name}
+                                    {element.medicineName}
                                   </option>
                                 );
                               })}
@@ -119,118 +121,28 @@ export default function AddSale({
                           </div>
                           <div>
                             <label
-                              htmlFor="stockSold"
+                              htmlFor="quantity"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Stock Sold
+                              Quantity
                             </label>
                             <input
                               type="number"
-                              name="stockSold"
-                              id="stockSold"
-                              value={sale.stockSold}
+                              name="quantity"
+                              id="quantity"
+                              value={sale.quantity}
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleInputChange(
+                                  e.target.name,
+                                  parseInt(e.target.value)
+                                )
                               }
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="0 - 999"
                             />
                           </div>
-
-                          <div>
-                            <label
-                              htmlFor="storeID"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                            >
-                              Store Name
-                            </label>
-                            <select
-                              id="storeID"
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              name="storeID"
-                              onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
-                              }
-                            >
-                              <option selected="">Select Store</option>
-                              {stores.map((element, index) => {
-                                return (
-                                  <option key={element._id} value={element._id}>
-                                    {element.name}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="totalSaleAmount"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                            >
-                              Total Sale Amount
-                            </label>
-                            <input
-                              type="number"
-                              name="totalSaleAmount"
-                              id="price"
-                              value={sale.totalSaleAmount}
-                              onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
-                              }
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="$299"
-                            />
-                          </div>
-                          <div className="h-fit w-fit">
-                            {/* <Datepicker
-                              onChange={handleChange}
-                              show={show}
-                              setShow={handleClose}
-                            /> */}
-                            <label
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                              htmlFor="salesDate"
-                            >
-                              Sales Date
-                            </label>
-                            <input
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              type="date"
-                              id="saleDate"
-                              name="saleDate"
-                              value={sale.saleDate}
-                              onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
-                              }
-                            />
-                          </div>
                         </div>
-                        <div className="flex items-center space-x-4">
-                          {/* <button
-                            type="submit"
-                            className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                          >
-                            Update product
-                          </button> */}
-                          {/* <button
-                            type="button"
-                            className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                          >
-                            <svg
-                              className="mr-1 -ml-1 w-5 h-5"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                            Delete
-                          </button> */}
-                        </div>
+                        <div className="flex items-center space-x-4"></div>
                       </form>
                     </div>
                   </div>
@@ -238,7 +150,7 @@ export default function AddSale({
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-orange-button px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cloud-burst sm:ml-3 sm:w-auto"
                     onClick={addSale}
                   >
                     Add Sale
